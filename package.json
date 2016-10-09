@@ -1,7 +1,7 @@
 {
   "name": "sequelize_crud_101",
-  "version": "1.0.0",
-  "description": "\"Code to accompany the Sequelize CRUD 101 blog post\"",
+  "version": "1.0.0"2
+  "description": "\"Code to accompany the Sequelize CRUD 102 blog post\"",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js"
