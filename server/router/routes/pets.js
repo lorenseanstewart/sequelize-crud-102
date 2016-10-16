@@ -13,10 +13,21 @@ module.exports = (app, db) => {
   app.get('/pet/:id', (req, res) => {
     const id = req.params.id;
     db.pets.find({
-      where: { id: id}
+      where: { id: id }
     })
       .then(pet => {
         res.json(pet);
+      });
+  });
+
+  // POST search route
+  app.post('/pets', (req, res) => {
+    const query = req.body.query;
+    db.pets.findAll({
+      where: query
+    })
+      .then(pets => {
+        res.json(pets);
       });
   });
 
