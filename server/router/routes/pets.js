@@ -47,6 +47,15 @@ module.exports = (app, db) => {
     });
   });
 
+  // POST multiple owners
+  app.post('/pets/bulk', (req, res) => {
+    const petList = req.body.pets;
+    db.pets.bulkCreate(petList)
+      .then(newPets => {
+        res.json(newPets);
+      })
+  });
+
   // PATCH single pet
   app.patch('/pet/:id', (req, res) => {
     const id = req.params.id;
@@ -62,6 +71,24 @@ module.exports = (app, db) => {
       });
   });
 
+  // PATCH multiple pets
+  app.patch('/pets/bulk', (req, res) => {
+    const ids = req.body.ids;
+    const updates = req.body.updates;
+    db.pets.findAll({
+      where: { id: { $in: ids } }
+    })
+      .then(pets => {
+        const updatePromises = pets.map(pet => {
+          return pet.updateAttributes(updates);
+        });
+        return db.Sequelize.Promise.all(updatePromises)
+      })
+      .then(updatedPets => {
+        res.json(updatedPets);
+      });
+  });
+
   app.delete('/pet/:id', (req, res) => {
     const id = req.params.id;
     db.pets.destroy({
@@ -69,6 +96,23 @@ module.exports = (app, db) => {
     })
       .then(deletedPet => {
         res.json(deletedPet);
+      });
+  });
+
+  // DELETE multiple pets
+  app.delete('/pets/bulk', (req, res) => {
+    const ids = req.body.ids;
+    db.pets.findAll({
+      where: { id: { $in: ids } }
+    })
+      .then(pets => {
+        const deletePromises = pets.map(pet => {
+          return pet.destroy();
+        });
+        return db.Sequelize.Promise.all(deletePromises)
+      })
+      .then(deletedPets => {
+        res.json(deletedPets);
       });
   });
 
